@@ -11,11 +11,16 @@ db.setup
 
 token = ENV['GITHUB_ACCESS_TOKEN']
 
-rows = db.repos_to_collect
+ids = db.repo_ids_to_collect
 
-rows.each do |row|
+ids.each do |id|
+  row = db.find_repo(id)
+
   url = row[2] + "?access_token=#{token}"
   response = Faraday.get(url).body
-
-  db.insert_languages(response, row[0])
+  if response =~ /rate limit exceeded/
+    puts "rate limit exceeded"
+    next
+  end
+  db.insert_languages(response, id)
 end

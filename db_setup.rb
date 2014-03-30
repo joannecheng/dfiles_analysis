@@ -24,8 +24,17 @@ class DatabaseSetup
     SQL
   end
 
-  def repos_to_collect
-    db.execute('select * from search_results')
+  def find_repo(id)
+    db.execute('select * from search_results where 
+              repo_id = ?', id).first
+  end
+
+  def repo_ids_to_collect
+    all_repo_ids = db.execute('select * from search_results').map {|r| r[0] }
+    collected_repo_ids = db.execute('select * from language_results')
+      .map { |r| r[0] }
+
+    all_repo_ids - collected_repo_ids
   end
 
   def insert_repos(dotfiles_repos)
