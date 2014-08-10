@@ -2,7 +2,12 @@ require 'faraday'
 require 'json'
 require_relative 'db_setup'
 
+def dotfile?(name)
+  (name =~ /dot?.file/ || name =~ /emacs\.d/)
+end
+
 db = DatabaseSetup.new
+db.setup
 
 token = ENV['GITHUB_ACCESS_TOKEN']
 
@@ -16,9 +21,10 @@ puts repo_id
 
   ids = response.map { |r| r["id"] }
 
-  db.insert_repos(response.select {|r| r['name'] =~ /dot?.file/ })
+  db.insert_repos(response.select do |r|
+     dotfile?(r['name']) && db.find_repo(r['id']).nil?
+  end)
 
   repo_id = ids.last
-  puts "procesing page #{i}"
 end
 
