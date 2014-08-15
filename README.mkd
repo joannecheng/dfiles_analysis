@@ -1,0 +1,9 @@
+# Dotfiles Analysis
+
+## Files
+
+* `db_setup.rb` - Class that handles connection and queries to sqlite3 db
+* `get_dotfiles` - Goes through all GitHub repos and collects any with the name
+`/dot.file/` or `emacs\.d`
+* `get_languages` - Gets language breakdown for repos in the database
+* `Language analysis.ipynb` - IPython notebook with analysis
